@@ -3,245 +3,323 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aesthetic Time Screensavers</title>
+    <title>20+ Aesthetic Time Screensavers</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@300;500&family=Playfair+Display:ital,wght@0,400;1,700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700&family=JetBrains+Mono:wght@100;400&family=Playfair+Display:ital,wght@0,400;1,700&family=Orbitron:wght@400;900&family=Bebas+Neue&family=Space+Grotesk:wght@300;700&family=Syne:wght@400;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0a0a0a;
-            --accent-color: #ffffff;
+            --primary: #ffffff;
+            --accent: #3b82f6;
+            --bg: #050505;
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--accent-color);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg);
+            color: var(--primary);
             overflow: hidden;
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            font-family: 'Inter', sans-serif;
+            transition: background 1s ease, color 1s ease;
         }
 
-        .screensaver-container {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* --- Transitions --- */
+        .fade-enter { opacity: 0; transform: scale(0.95); }
+        .fade-active { opacity: 1; transform: scale(1); transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1); }
+
+        /* --- Layout --- */
+        #stage {
+            width: 100vw; height: 100vh;
+            display: flex; align-items: center; justify-content: center;
             position: relative;
         }
 
-        /* Theme: Neon Cyber */
-        .theme-cyber {
-            --accent-color: #00f2ff;
-            font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 20px rgba(0, 242, 255, 0.5), 0 0 40px rgba(0, 242, 255, 0.2);
-        }
-
-        /* Theme: Minimalist */
-        .theme-minimal {
-            --accent-color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            font-weight: 300;
-            letter-spacing: -0.05em;
-        }
-
-        /* Theme: Retro Console */
-        .theme-retro {
-            --accent-color: #4ade80;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Theme: Elegant Serif */
-        .theme-elegant {
-            --accent-color: #fde68a;
-            font-family: 'Playfair Display', serif;
-        }
-
-        /* Theme: Aurora */
-        .theme-aurora {
-            background: linear-gradient(45deg, #0f172a, #1e1b4b, #312e81);
-            --accent-color: #e0e7ff;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .clock-wrapper {
-            text-align: center;
-            animation: fadeIn 1.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .time-display {
-            font-size: clamp(4rem, 15vw, 12rem);
-            line-height: 1;
-            margin-bottom: 1rem;
-        }
-
-        .date-display {
-            font-size: clamp(1rem, 3vw, 2rem);
-            opacity: 0.8;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-        }
-
-        .location-tag {
-            margin-top: 2rem;
-            font-size: 0.875rem;
-            opacity: 0.5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .controls {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.05);
+        /* --- Navigation --- */
+        .nav-btn {
+            position: fixed; top: 50%; transform: translateY(-50%);
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white; padding: 2rem 1rem; cursor: pointer;
+            z-index: 100; transition: all 0.3s; opacity: 0;
             backdrop-filter: blur(10px);
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
-            display: flex;
-            gap: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 100;
-            transition: opacity 0.3s;
+        }
+        body:hover .nav-btn { opacity: 1; }
+        .nav-btn:hover { background: rgba(255,255,255,0.1); }
+        .nav-left { left: 0; border-radius: 0 1rem 1rem 0; }
+        .nav-right { right: 0; border-radius: 1rem 0 0 1rem; }
+
+        .ui-panel {
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+            z-index: 101; opacity: 0; transition: opacity 0.5s;
+        }
+        body:hover .ui-panel { opacity: 1; }
+
+        /* --- Analog Clock Bases --- */
+        .analog-face {
+            width: 350px; height: 350px;
+            border-radius: 50%; border: 2px solid currentColor;
+            position: relative;
+        }
+        .hand {
+            position: absolute; bottom: 50%; left: 50%;
+            transform-origin: bottom; border-radius: 10px;
+            background: currentColor;
         }
 
-        .controls:hover {
-            opacity: 1;
+        /* --- Specific Theme Styles --- */
+        .glitch { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 10px; }
+        .brutal { font-family: 'Syne'; font-weight: 800; text-transform: uppercase; }
+        .zen { font-family: 'Inter'; font-weight: 100; letter-spacing: 20px; }
+        .mono { font-family: 'JetBrains Mono'; font-weight: 100; }
+        
+        /* Particle Background */
+        #canvas-bg {
+            position: absolute; top: 0; left: 0; z-index: -1;
         }
 
-        .theme-btn {
-            width: 2rem;
-            height: 2rem;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
+        /* --- Theme Colors --- */
+        .theme-crimson { --bg: #1a0505; --primary: #ff4d4d; }
+        .theme-emerald { --bg: #051a0d; --primary: #4dff88; }
+        .theme-midnight { --bg: #020617; --primary: #60a5fa; }
+        .theme-gold { --bg: #0f0b01; --primary: #fbbf24; }
+        .theme-clay { --bg: #1e1b1e; --primary: #d8b4fe; }
+        .theme-paper { --bg: #f5f5f5; --primary: #1a1a1a; }
 
-        .theme-btn:hover {
-            transform: scale(1.2);
-        }
-
-        .cursor-hide {
-            cursor: none;
-        }
-
-        .glow-effect {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: var(--accent-color);
-            filter: blur(150px);
-            opacity: 0.1;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: -1;
-            transition: all 1s;
-        }
+        .cursor-hide { cursor: none; }
     </style>
 </head>
-<body class="theme-minimal" id="body">
+<body id="app">
 
-    <div class="glow-effect" id="glow"></div>
+    <canvas id="canvas-bg"></canvas>
 
-    <div class="screensaver-container" id="container">
-        <div class="clock-wrapper">
-            <div id="time" class="time-display">00:00:00</div>
-            <div id="date" class="date-display">Tuesday, 21 April 2026</div>
-            <div class="location-tag">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                Karakurussi, Kerala • IST
-            </div>
-        </div>
+    <button class="nav-btn nav-left" onclick="prevTheme()">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    
+    <button class="nav-btn nav-right" onclick="nextTheme()">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+
+    <div id="stage">
+        <!-- Content injected by JS -->
     </div>
 
-    <div class="controls" id="controls">
-        <button onclick="setTheme('theme-minimal')" class="theme-btn bg-white" title="Minimal"></button>
-        <button onclick="setTheme('theme-cyber')" class="theme-btn bg-cyan-400" title="Cyberpunk"></button>
-        <button onclick="setTheme('theme-retro')" class="theme-btn bg-green-500" title="Retro"></button>
-        <button onclick="setTheme('theme-elegant')" class="theme-btn bg-amber-200" title="Elegant"></button>
-        <button onclick="setTheme('theme-aurora')" class="theme-btn bg-indigo-600" title="Aurora"></button>
-        <div class="w-px h-6 bg-white/20 mx-2"></div>
-        <button onclick="toggleFullscreen()" class="text-white/60 hover:text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+    <div class="ui-panel flex items-center gap-4 bg-black/40 p-3 rounded-full border border-white/10 backdrop-blur-md">
+        <span id="theme-index" class="text-xs font-mono opacity-50 px-3">01 / 25</span>
+        <div class="h-4 w-px bg-white/20"></div>
+        <button onclick="toggleFullscreen()" class="p-2 hover:bg-white/10 rounded-full transition">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
         </button>
     </div>
 
     <script>
-        function updateTime() {
-            // Get time for Asia/Kolkata
-            const options = {
-                timeZone: 'Asia/Kolkata',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true
-            };
-            
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-IN', options);
-            
-            const dateOptions = {
-                timeZone: 'Asia/Kolkata',
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            };
-            const dateString = now.toLocaleDateString('en-IN', dateOptions);
+        const themes = [
+            { id: 'minimal-focus', name: 'Minimal Focus', class: 'zen', type: 'digital' },
+            { id: 'cyberpunk', name: 'Cyberpunk Red', class: 'theme-crimson glitch', type: 'digital' },
+            { id: 'matrix', name: 'Matrix Rain', class: 'theme-emerald mono', type: 'digital' },
+            { id: 'classic-swiss', name: 'Classic Swiss', class: 'theme-paper', type: 'analog' },
+            { id: 'brutalist', name: 'Brutalist Extra', class: 'brutal', type: 'digital' },
+            { id: 'stardust', name: 'Midnight Stardust', class: 'theme-midnight', type: 'digital', animated: true },
+            { id: 'gold-luxury', name: 'Gold Leaf', class: 'theme-gold', type: 'analog' },
+            { id: 'typewriter', name: 'Poet Style', class: 'theme-paper mono', type: 'text' },
+            { id: 'vaporwave', name: 'Vapor Neon', class: 'theme-clay', type: 'digital' },
+            { id: 'bauhaus', name: 'Bauhaus Geometry', class: 'theme-paper', type: 'bauhaus' },
+            { id: 'big-hour', name: 'Hour Focus', class: 'theme-midnight', type: 'huge' },
+            { id: 'vertical', name: 'Vertical Flow', class: 'theme-crimson', type: 'vertical' },
+            { id: 'blueprint', name: 'Architect Blueprint', class: 'theme-midnight mono', type: 'digital' },
+            { id: 'bold-italics', name: 'Dynamic Speed', class: 'theme-emerald', type: 'italics' },
+            { id: 'roman', name: 'Ancient Roman', class: 'theme-gold', type: 'analog-roman' },
+            { id: 'soft-glow', name: 'Aura Glow', class: 'theme-clay', type: 'glow' },
+            { id: 'dotted', name: 'Led Dot Matrix', class: 'theme-emerald mono', type: 'dots' },
+            { id: 'serene', name: 'Serene Serif', class: 'theme-paper', type: 'digital-serif' },
+            { id: 'deep-space', name: 'Void Pulse', class: 'theme-midnight', type: 'pulse' },
+            { id: 'gradient-text', name: 'Liquid Color', class: '', type: 'gradient' },
+            { id: 'split-flap', name: 'Airport Board', class: 'mono', type: 'digital' },
+            { id: 'bubble', name: 'Bubble Time', class: 'theme-clay', type: 'digital' },
+            { id: 'hacker', name: 'Kernel Debug', class: 'theme-emerald mono', type: 'hacker' }
+        ];
 
-            document.getElementById('time').textContent = timeString;
-            document.getElementById('date').textContent = dateString;
+        let currentIdx = 0;
+        const stage = document.getElementById('stage');
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.onresize = resize;
+        resize();
+
+        function createParticles() {
+            particles = [];
+            for(let i=0; i<100; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    size: Math.random() * 2
+                });
+            }
+        }
+        createParticles();
+
+        function animateParticles() {
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            const theme = themes[currentIdx];
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--primary');
+            ctx.globalAlpha = 0.3;
             
-            // Move glow effect subtly
-            const glow = document.getElementById('glow');
-            const x = Math.sin(now.getSeconds() / 10) * 50;
-            const y = Math.cos(now.getSeconds() / 10) * 50;
-            glow.style.transform = `translate(${x}px, ${y}px)`;
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if(p.x < 0) p.x = canvas.width;
+                if(p.x > canvas.width) p.x = 0;
+                if(p.y < 0) p.y = canvas.height;
+                if(p.y > canvas.height) p.y = 0;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                ctx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        function updateClock() {
+            const now = new Date();
+            const timeOptions = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            const dateOptions = { timeZone: 'Asia/Kolkata', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            
+            const timeStr = now.toLocaleTimeString('en-IN', timeOptions);
+            const dateStr = now.toLocaleDateString('en-IN', dateOptions);
+            
+            const theme = themes[currentIdx];
+            const content = document.getElementById('clock-content');
+            if(!content) return;
+
+            // Handle Analog Logic
+            if (theme.type.includes('analog')) {
+                const s = now.getSeconds();
+                const m = now.getMinutes();
+                const h = now.getHours();
+                const sHand = document.getElementById('hand-sec');
+                const mHand = document.getElementById('hand-min');
+                const hHand = document.getElementById('hand-hour');
+                if(sHand) sHand.style.transform = `translateX(-50%) rotate(${s * 6}deg)`;
+                if(mHand) mHand.style.transform = `translateX(-50%) rotate(${m * 6 + s * 0.1}deg)`;
+                if(hHand) hHand.style.transform = `translateX(-50%) rotate(${h * 30 + m * 0.5}deg)`;
+            } else if (theme.type === 'huge') {
+                document.getElementById('display-h').textContent = now.getHours().toString().padStart(2, '0');
+                document.getElementById('display-m').textContent = now.getMinutes().toString().padStart(2, '0');
+            } else if (theme.type === 'vertical') {
+                document.getElementById('v-h').textContent = now.getHours().toString().padStart(2, '0');
+                document.getElementById('v-m').textContent = now.getMinutes().toString().padStart(2, '0');
+                document.getElementById('v-s').textContent = now.getSeconds().toString().padStart(2, '0');
+            } else {
+                const timeEl = document.getElementById('time-main');
+                if(timeEl) timeEl.textContent = timeStr;
+            }
+            
+            const dateEl = document.getElementById('date-main');
+            if(dateEl) dateEl.textContent = dateStr;
         }
 
-        function setTheme(theme) {
-            const body = document.getElementById('body');
-            body.className = theme;
+        function renderTheme() {
+            const theme = themes[currentIdx];
+            document.body.className = theme.class;
+            document.getElementById('theme-index').textContent = `${(currentIdx + 1).toString().padStart(2, '0')} / ${themes.length}`;
+            
+            let html = `<div id="clock-content" class="fade-enter text-center">`;
+            
+            if (theme.type === 'analog' || theme.type === 'analog-roman') {
+                html += `
+                    <div class="analog-face mx-auto mb-8">
+                        ${[...Array(12)].map((_, i) => `<div style="position:absolute; width:100%; height:100%; text-align:center; transform:rotate(${i*30}deg); padding:10px; font-weight:bold">${theme.type.includes('roman') ? ['XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI'][i] : (i==0?12:i)}</div>`).join('')}
+                        <div id="hand-hour" class="hand w-2 h-24" style="z-index:3"></div>
+                        <div id="hand-min" class="hand w-1 h-32" style="z-index:2"></div>
+                        <div id="hand-sec" class="hand w-0.5 h-36 bg-red-500" style="z-index:1"></div>
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-current rounded-full"></div>
+                    </div>
+                    <div id="date-main" class="text-lg opacity-50 tracking-widest uppercase"></div>
+                `;
+            } else if (theme.type === 'huge') {
+                html += `
+                    <div class="flex flex-col items-center">
+                        <div id="display-h" class="text-[25vw] font-black leading-none opacity-10">00</div>
+                        <div id="display-m" class="text-[25vw] font-black leading-none -mt-[5vw]">00</div>
+                        <div id="date-main" class="mt-4 text-xl tracking-tighter"></div>
+                    </div>
+                `;
+            } else if (theme.type === 'vertical') {
+                html += `
+                    <div class="flex flex-col text-[12vh] font-bold leading-none">
+                        <span id="v-h">00</span><span id="v-m">00</span><span id="v-s" class="opacity-30">00</span>
+                    </div>
+                    <div id="date-main" class="mt-8 vertical-text text-sm opacity-50 [writing-mode:vertical-rl]"></div>
+                `;
+            } else if (theme.type === 'hacker') {
+                html += `
+                    <div class="text-left text-sm opacity-80 border-l-2 border-current pl-4">
+                        <div>> SYSTEM_TIME_FETCH_SUCCESS</div>
+                        <div>> LOCATION: KARAKURUSSI_KERALA</div>
+                        <div class="text-6xl my-4" id="time-main">00:00:00</div>
+                        <div id="date-main"></div>
+                        <div class="animate-pulse">_</div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div id="time-main" class="text-[12vw] leading-none mb-4 whitespace-nowrap">00:00:00</div>
+                    <div id="date-main" class="text-xl opacity-60 tracking-[0.3em]"></div>
+                `;
+            }
+
+            html += `<div class="mt-12 text-[10px] opacity-30 uppercase tracking-[0.5em]">Karakurussi, Kerala, India</div>`;
+            html += `</div>`;
+            
+            stage.innerHTML = html;
+            
+            setTimeout(() => {
+                document.getElementById('clock-content').classList.add('fade-active');
+            }, 50);
+            
+            updateClock();
+        }
+
+        function nextTheme() {
+            currentIdx = (currentIdx + 1) % themes.length;
+            renderTheme();
+        }
+
+        function prevTheme() {
+            currentIdx = (currentIdx - 1 + themes.length) % themes.length;
+            renderTheme();
         }
 
         function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
-            }
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else document.exitFullscreen();
         }
 
-        // Hide controls after inactivity
-        let timeout;
+        // Hide UI on inactivity
+        let idleTimer;
         document.addEventListener('mousemove', () => {
-            const controls = document.getElementById('controls');
-            const body = document.getElementById('body');
-            controls.style.opacity = '1';
-            body.classList.remove('cursor-hide');
-            
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                controls.style.opacity = '0';
-                body.classList.add('cursor-hide');
-            }, 3000);
+            document.body.classList.remove('cursor-hide');
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(() => {
+                document.body.classList.add('cursor-hide');
+            }, 4000);
         });
 
-        // Initialize
-        setInterval(updateTime, 1000);
-        updateTime();
+        // Key listeners
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'ArrowRight') nextTheme();
+            if(e.key === 'ArrowLeft') prevTheme();
+        });
+
+        setInterval(updateClock, 1000);
+        renderTheme();
     </script>
 </body>
 </html>
